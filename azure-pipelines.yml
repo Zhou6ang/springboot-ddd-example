@@ -1,0 +1,151 @@
+# Maven
+# Build your Java projects and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javaresources:
+
+pool:
+  name: Default
+
+
+variables:
+  artifactsName: zg-app
+  dockerRegistry: gangreg.azurecr.io
+  imageName: my-app
+  webAppNameInDev: gang-dev
+  webAppNameInProd: gang-prod
+
+
+stages:
+  - stage: build
+    jobs:
+      - job: build
+        steps:        
+        - task: Maven@3
+          displayName: 'unit test and package'
+          inputs:
+            mavenPomFile: ./pom.xml
+            goals: package
+            options: '-Dmaven.test.skip=true'
+        - bash: |
+                echo $(build.artifactstagingdirectory)
+                ls $(build.artifactstagingdirectory)
+                echo "=========="
+                cp target/*.jar $(build.artifactstagingdirectory)
+                ls
+        - task: PublishBuildArtifacts@1
+          displayName: publish artifacts
+          inputs:
+            PathtoPublish: '$(build.artifactstagingdirectory)'            
+            ArtifactName: '$(ARTIFACTSNAME)'
+            publishLocation: 'Container'
+  # - stage: securityCheck
+  #   jobs:
+  #     - job: SonarCheck
+  #       steps:
+  #       - bash: echo "sonar check"
+  #     - job: FortifyCheck
+  #       steps:
+  #         - bash: echo "fortify check"
+  - stage: docker
+    dependsOn: build
+    jobs:
+    - job: image
+      displayName: "build and publish docker image"
+      steps:
+             
+      - task: DownloadBuildArtifacts@1
+        displayName: download artifacts
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          ArtifactName: '$(ARTIFACTSNAME)'
+          downloadPath: '$(System.ArtifactsDirectory)'
+          cleanDestinationFolder: true
+
+      - task: Bash@3
+        displayName: pre-build
+        inputs:
+          targetType: 'inline'
+          script: |
+            # Write your commands here   
+            mkdir -p target            
+            mv $(System.ArtifactsDirectory)/$(ARTIFACTSNAME)/* target
+            ls target
+            cat Dockerfile
+
+      - task: Docker@2
+        displayName: build and push image to registry
+        inputs:
+          containerRegistry: 'abc'
+          repository: '$(imageName)'
+          command: 'buildAndPush'
+          Dockerfile: 'Dockerfile'
+          tags: '$(Build.BuildId)'
+  - stage: deployDev
+    dependsOn: docker
+    jobs:
+      - deployment: Dev
+        environment: dev
+        condition: 
+        strategy:
+          runOnce:
+            preDeploy:
+              steps:
+               - checkout: self
+               - bash: echo "step 1 before deploy..."
+            routeTraffic:
+              steps:
+                - bash: echo "step 3 route traffic..."
+            deploy:
+              steps:
+                - bash: echo "step 3 deploy..."
+                - task: AzureWebAppContainer@1
+                  inputs:
+                    azureSubscription: 'Azure subscription 1(f7bbcd42-b266-4f66-8b52-6560836a7702)'
+                    appName: '$(webAppNameInDev)'
+                    containers: '$(dockerRegistry)/$(imageName):$(Build.BuildId)'
+            postRouteTraffic:
+              steps:
+                - bash: echo "step 4 post route traffic"
+            on:
+              success:
+                steps:
+                  - bash: echo "step 5 some operations if deploy is successful"
+              failure:
+                steps:
+                  - bash: echo "step 5 some operations if deploy is failed"
+  - stage: deployProd
+    dependsOn: deployDev
+    jobs:
+      - deployment: Prod
+        # depends on dev deployment successfully
+        # dependsOn: Dev 
+        environment: prod
+        strategy:
+          runOnce:
+            preDeploy:
+              steps:
+               - checkout: self
+               - bash: echo "step 1 before deploy..."
+            routeTraffic:
+              steps:
+                - bash: echo "step 3 route traffic..."
+            deploy:
+              steps:
+                - bash: echo "step 3 deploy..."
+                - task: AzureWebAppContainer@1
+                  inputs:
+                    azureSubscription: 'Azure subscription 1(f7bbcd42-b266-4f66-8b52-6560836a7702)'
+                    appName: '$(webAppNameInProd)'
+                    containers: '$(dockerRegistry)/$(imageName):$(Build.BuildId)'
+            postRouteTraffic:
+              steps:
+                - bash: echo "step 4 post route traffic"
+            on:
+              success:
+                steps:
+                  - bash: echo "step 5 some operations if deploy is successful"
+              failure:
+                steps:
+                  - bash: echo "step 5 some operations if deploy is failed"
+
