@@ -4,13 +4,13 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javaresources:
 
 pool:
-  name: Default
+  name: Azure Pipelines
 
 
 variables:
-  artifactsName: zg-app
+  artifactsName: zg-ddd-app
   dockerRegistry: gangreg.azurecr.io
-  imageName: my-app
+  imageName: my-ddd-app
   webAppNameInDev: gang-dev
   webAppNameInProd: gang-prod
 
@@ -24,6 +24,7 @@ stages:
           displayName: 'unit test and package'
           inputs:
             mavenPomFile: ./pom.xml
+            jdkVersionOption: 1.17
             goals: package
             options: '-Dmaven.test.skip=true'
         - bash: |
@@ -101,9 +102,10 @@ stages:
                 - bash: echo "step 3 deploy..."
                 - task: AzureWebAppContainer@1
                   inputs:
-                    azureSubscription: 'Azure subscription 1(f7bbcd42-b266-4f66-8b52-6560836a7702)'
+                    azureSubscription: 'Azure subscription 1'
                     appName: '$(webAppNameInDev)'
                     containers: '$(dockerRegistry)/$(imageName):$(Build.BuildId)'
+                
             postRouteTraffic:
               steps:
                 - bash: echo "step 4 post route traffic"
@@ -135,7 +137,7 @@ stages:
                 - bash: echo "step 3 deploy..."
                 - task: AzureWebAppContainer@1
                   inputs:
-                    azureSubscription: 'Azure subscription 1(f7bbcd42-b266-4f66-8b52-6560836a7702)'
+                    azureSubscription: 'Azure subscription 1'
                     appName: '$(webAppNameInProd)'
                     containers: '$(dockerRegistry)/$(imageName):$(Build.BuildId)'
             postRouteTraffic:
