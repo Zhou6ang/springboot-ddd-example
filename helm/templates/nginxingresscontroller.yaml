@@ -1,0 +1,29 @@
+{{- if .Values.nginxIngressController.enabled -}}
+{{- $fullName := include "springboot-demo.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+
+#Create an internal NGINX ingress controller with a private IP address
+apiVersion: approuting.kubernetes.azure.com/v1alpha1
+kind: NginxIngressController
+
+metadata:
+  name: {{ $fullName }}-ingresscontroller
+  labels:
+    {{- include "springboot-demo.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  controllerNamePrefix: {{ .Values.ingress.className }}
+  {{- with .Values.nginxIngressController.loadBalancerAnnotations }}
+  loadBalancerAnnotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

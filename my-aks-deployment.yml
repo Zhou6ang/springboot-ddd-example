@@ -1,0 +1,105 @@
+  apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: azure-ddd
+  spec:
+    finalizers:
+      - kubernetes
+---
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: azure-ddd-back
+    namespace: azure-ddd
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: azure-ddd-back
+    template:
+      metadata:
+        labels:
+          app: azure-ddd-back
+      spec:
+        nodeSelector:
+          kubernetes.io/os: linux
+        imagePullSecrets:
+          - name: my-acr-secret
+        containers:
+          - name: azure-ddd-back
+            image: gangreg.azurecr.io/my-ddd-app:87
+            env:
+              - name: ALLOW_EMPTY_PASSWORD
+                value: 'yes'
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                cpu: 800m
+                memory: 1024Mi
+            ports:
+              - containerPort: 8888
+                name: my-ddd
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: azure-ddd-svc
+    namespace: azure-ddd
+  spec:
+    type: ClusterIP
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 8888
+    selector:
+      app: azure-ddd-back
+
+# following service is for loadbalancer access outside.
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: azure-ddd-svc-external
+    namespace: azure-ddd
+  spec:
+    type: LoadBalancer
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 8888
+    selector:
+      app: azure-ddd-back
+      
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: azure-ddd-ingress
+  namespace: azure-ddd
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com  #my-nginx-internal
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: azure-ddd-svc
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+    #host: myapp.zg.com  #must to pass Host:myapp.zg.com in request header.
+
+---
+#Create an internal NGINX ingress controller with a private IP address
+apiVersion: approuting.kubernetes.azure.com/v1alpha1
+kind: NginxIngressController
+metadata:
+  name: my-nginx-internal
+spec:
+  ingressClassName: my-nginx-internal
+  controllerNamePrefix: my-nginx-internal
+  loadBalancerAnnotations: 
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"

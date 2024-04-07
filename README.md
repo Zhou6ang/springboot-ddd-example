@@ -26,3 +26,12 @@ links:
   - Edit azure-pipeline.yml if needed and trigger it.
   
   
+## Deployed to AKS manually
+1. create imagePullSecret: kubectl create secret docker-registry my-acr-secret --docker-server=xxx.azurecr.io --docker-username=xxx --docker-password=xxx --docker-email=xxx -n azure-ddd
+2. kubectl -n <namespace> apply -f my-aks-deployment.yml
+3. kubectl -n <namespace> delete -f my-aks-deployment.yml
+
+## Deployed to AKS via helm
+1. create namespace & imagePullSecret: kubectl create secret docker-registry my-acr-secret --docker-server=xxx.azurecr.io --docker-username=xxx --docker-password=xxx --docker-email=xxx -n azure-ddd
+2. helm install <my-app> ./helm --debug -n <namespace>
+3. helm del <my-app> -n <namespace>
