@@ -82,14 +82,14 @@ livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 15
   httpGet:
-    path: /api/v1/user
-    port: http
+    path: /actuator/health/liveness
+    port: 8081 #http
 readinessProbe:
   initialDelaySeconds: 30
   periodSeconds: 15
   httpGet:
-    path: /api/v1/user
-    port: http
+    path: /actuator/health/readiness
+    port: 8081 #http
 
 autoscaling:
   enabled: false
