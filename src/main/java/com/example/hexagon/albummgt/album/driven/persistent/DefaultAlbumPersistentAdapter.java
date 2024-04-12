@@ -3,7 +3,7 @@ package com.example.hexagon.albummgt.album.driven.persistent;
 import com.example.hexagon.albummgt.album.core.domain.AlbumAggregate;
 import com.example.hexagon.albummgt.album.core.domain.Artist;
 import com.example.hexagon.albummgt.album.core.domain.DomainAlbumException;
-import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistentInterface;
+import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class AlbumPersistentAdapter implements AlbumPersistentInterface {
+public class DefaultAlbumPersistentAdapter implements AlbumPersistent {
     private final AlbumRepository albumRepository;
     private final ArtistRepository artistRepository;
 //    private final TransactionTemplate transactionTemplate;

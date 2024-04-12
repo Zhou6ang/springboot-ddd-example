@@ -4,7 +4,7 @@ package com.example.hexagon.albummgt.album.core.domain.service;
 import com.example.hexagon.albummgt.album.core.domain.AlbumAggregate;
 import com.example.hexagon.albummgt.album.core.domain.Artist;
 import com.example.hexagon.albummgt.album.core.domain.DomainAlbumException;
-import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistentInterface;
+import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistent;
 import com.example.hexagon.albummgt.album.driving.dto.AlbumDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DomainAlbumService {
 
-    private final AlbumPersistentInterface albumPersistent;
+    private final AlbumPersistent albumPersistent;
 
     public Long createAlbum(AlbumDTO dto) {
         log.info("Create Album in domain service");

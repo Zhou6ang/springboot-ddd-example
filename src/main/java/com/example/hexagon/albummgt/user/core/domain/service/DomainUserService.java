@@ -4,19 +4,18 @@ package com.example.hexagon.albummgt.user.core.domain.service;
 import com.example.hexagon.albummgt.user.core.domain.DomainUserException;
 import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import com.example.hexagon.albummgt.user.core.domain.WishItem;
-import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistentInterface;
+import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistent;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Slf4j
 @RequiredArgsConstructor
 public class DomainUserService {
 
-    private final UserPersistentInterface userPersistent;
+    private final UserPersistent userPersistent;
 
     public Long createUser(UserDTO req) {
         log.info("Create User in domain service");

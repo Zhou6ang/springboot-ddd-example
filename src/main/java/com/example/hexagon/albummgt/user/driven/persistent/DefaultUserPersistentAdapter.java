@@ -2,11 +2,9 @@ package com.example.hexagon.albummgt.user.driven.persistent;
 
 import com.example.hexagon.albummgt.user.core.domain.DomainUserException;
 import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
-import com.example.hexagon.albummgt.user.core.domain.WishItem;
-import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistentInterface;
+import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class UserPersistentAdapter implements UserPersistentInterface {
+public class DefaultUserPersistentAdapter implements UserPersistent {
     private final UserRepository userRepository;
     private final WishItemRepository wishItemRepository;
 //    private final TransactionTemplate transactionTemplate;

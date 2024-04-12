@@ -5,7 +5,7 @@ import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserPersistentInterface {
+public interface UserPersistent {
     Optional<UserAggregate> findById(String id);
 
     Long save(UserAggregate userAggregate);
