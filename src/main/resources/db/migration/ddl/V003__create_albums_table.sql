@@ -1,0 +1,11 @@
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'albums')
+BEGIN
+    CREATE TABLE albums (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        title VARCHAR(255),
+        price DECIMAL(10, 2),
+        user_id VARCHAR(100),
+        created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_date DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+END;

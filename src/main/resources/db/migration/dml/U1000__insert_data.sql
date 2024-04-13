@@ -1,0 +1,1 @@
+DELETE FROM users where name = 'John Doe' or name = 'Jane Doe';

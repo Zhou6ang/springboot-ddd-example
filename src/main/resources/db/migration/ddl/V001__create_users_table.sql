@@ -1,0 +1,12 @@
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'users')
+BEGIN
+    CREATE TABLE users (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        name VARCHAR(50),
+        email VARCHAR(50),
+        gender VARCHAR(20),
+        phone VARCHAR(50),
+        created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_date DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+END;

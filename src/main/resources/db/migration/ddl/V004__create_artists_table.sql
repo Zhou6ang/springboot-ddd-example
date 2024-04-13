@@ -1,0 +1,12 @@
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'artists')
+BEGIN
+    CREATE TABLE artists (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        name VARCHAR(255),
+        biography VARCHAR(MAX),
+        birthDay VARCHAR(255),
+        album_id BIGINT,
+        created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_date DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+END;
