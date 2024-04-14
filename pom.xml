@@ -111,6 +111,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<!--Only support commercial version-->
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
