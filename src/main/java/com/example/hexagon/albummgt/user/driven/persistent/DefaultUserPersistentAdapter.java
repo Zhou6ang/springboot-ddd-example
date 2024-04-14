@@ -65,12 +65,12 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
         UserEntity user = userRepository.save(UserEntity.toUserEntity(userAggregate));
         if (!CollectionUtils.isEmpty(userAggregate.getWishlists())) {
             List<WishItemEntity> wishlist = userAggregate.getWishlists().stream().peek(e -> e.setUserId(user.getId())).map(WishItemEntity::fromUserAggregate).collect(Collectors.toList());
-            List<WishItemEntity> toBeAdded = wishlist.stream().filter(e->e.getId()==null).collect(Collectors.toList());
-            if(!toBeAdded.isEmpty()){
+            List<WishItemEntity> toBeAdded = wishlist.stream().filter(e -> e.getId() == null).collect(Collectors.toList());
+            if (!toBeAdded.isEmpty()) {
                 wishItemRepository.deleteByUserId(user.getId());
             }
             wishItemRepository.saveAll(wishlist);
-        }else{
+        } else {
             wishItemRepository.deleteByUserId(user.getId());
         }
         return user.getId();
@@ -83,8 +83,11 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
         List<WishItemEntity> wishList = wishItemRepository.findAllByUserIdIn(new ArrayList<>(mapper.keySet()));
         if (!CollectionUtils.isEmpty(wishList)) {
             Map<String, List<WishItemEntity>> wishlistMapper = wishList.stream().collect(Collectors.groupingBy(e -> e.getUserId() + ""));
-            return mapper.values().stream().flatMap(e -> e.stream()).peek(e ->
-                    e.addWishlists(wishlistMapper.get(e.getId()).stream().map(WishItemEntity::toWishItem).collect(Collectors.toList()))
+            return mapper.values().stream().flatMap(e -> e.stream()).peek(e -> {
+                        if (wishlistMapper.get(e.getId()) != null) {
+                            e.addWishlists(wishlistMapper.get(e.getId()).stream().map(WishItemEntity::toWishItem).collect(Collectors.toList()));
+                        }
+                    }
             ).collect(Collectors.toList());
         } else {
             return mapper.values().stream().flatMap(e -> e.stream()).collect(Collectors.toList());
