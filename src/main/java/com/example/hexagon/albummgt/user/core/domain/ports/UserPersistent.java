@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserPersistent {
-    Optional<UserAggregate> findById(String id);
 
-    Long save(UserAggregate userAggregate);
+  Optional<UserAggregate> findById(String id);
 
-    void delete(String id);
+  Long save(UserAggregate userAggregate);
 
-    Long update(UserAggregate userAggregate);
+  void delete(String id);
 
-    List<UserAggregate> findAll();
+  Long update(UserAggregate userAggregate);
+
+  List<UserAggregate> findAll();
 }

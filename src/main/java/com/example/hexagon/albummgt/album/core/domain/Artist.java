@@ -8,10 +8,11 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class Artist {
-    private long id;
-    private String name;
-    private String biography;
-    private String birthDay;
-    private Long albumId;
-    private Timestamp updatedDate;
+
+  private long id;
+  private String name;
+  private String biography;
+  private String birthDay;
+  private Long albumId;
+  private Timestamp updatedDate;
 }

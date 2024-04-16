@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface WishItemRepository extends JpaRepository<WishItemEntity,Long>{
+public interface WishItemRepository extends JpaRepository<WishItemEntity, Long> {
 
-    List<WishItemEntity> findByUserId(Long userId);
+  List<WishItemEntity> findByUserId(Long userId);
 
-    @Modifying
-    void deleteByUserId(Long userId);
-    List<WishItemEntity> findAllByUserIdIn(List<Long> userIds);
+  @Modifying
+  void deleteByUserId(Long userId);
+
+  List<WishItemEntity> findAllByUserIdIn(List<Long> userIds);
 }

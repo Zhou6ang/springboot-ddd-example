@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AlbumPersistent {
-    Optional<AlbumAggregate> findById(String id);
 
-    Long save(AlbumAggregate userAggregate);
+  Optional<AlbumAggregate> findById(String id);
 
-    void delete(String id);
+  Long save(AlbumAggregate userAggregate);
 
-    Long update(AlbumAggregate userAggregate);
+  void delete(String id);
 
-    List<AlbumAggregate> findAll();
+  Long update(AlbumAggregate userAggregate);
+
+  List<AlbumAggregate> findAll();
 }

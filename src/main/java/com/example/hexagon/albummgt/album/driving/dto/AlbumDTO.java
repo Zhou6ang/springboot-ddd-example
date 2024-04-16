@@ -15,12 +15,12 @@ import java.util.List;
 @Data
 @Builder
 public class AlbumDTO {
-    private String id;
-    private String title;
-    private BigDecimal price;
-    private String userId;
-    private Artist artist;
-    @JsonProperty("update_date")
-    private Timestamp updateDate;
+  private String id;
+  private String title;
+  private BigDecimal price;
+  private String userId;
+  private Artist artist;
+  @JsonProperty("update_date")
+  private Timestamp updateDate;
 
 }

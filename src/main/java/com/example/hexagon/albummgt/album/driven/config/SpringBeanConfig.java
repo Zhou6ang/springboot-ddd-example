@@ -12,18 +12,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration("AlbumSpringConfig")
 public class SpringBeanConfig {
 
-    @Bean
-    AlbumPersistent albumPersistent(AlbumRepository albumRepository, ArtistRepository artistRepository) {
-        return new DefaultAlbumPersistentAdapter(albumRepository,artistRepository);
-    }
+  @Bean
+  AlbumPersistent albumPersistent(AlbumRepository albumRepository,
+      ArtistRepository artistRepository) {
+    return new DefaultAlbumPersistentAdapter(albumRepository, artistRepository);
+  }
 
-    @Bean
-    DomainAlbumService domainAlbumService(AlbumPersistent userPersistent) {
-        return new DomainAlbumService(userPersistent);
-    }
+  @Bean
+  DomainAlbumService domainAlbumService(AlbumPersistent userPersistent) {
+    return new DomainAlbumService(userPersistent);
+  }
 
-    @Bean
-    ApplicationAlbumService applicationAlbumService(DomainAlbumService domainAlbumService) {
-        return new ApplicationAlbumService(domainAlbumService);
-    }
+  @Bean
+  ApplicationAlbumService applicationAlbumService(DomainAlbumService domainAlbumService) {
+    return new ApplicationAlbumService(domainAlbumService);
+  }
 }

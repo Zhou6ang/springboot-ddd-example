@@ -16,67 +16,68 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ApplicationUserService {
 
-    private final DomainUserService domainUserService;
+  private final DomainUserService domainUserService;
 
-    public Long createUser(UserDTO req) {
-        log.info("create user in application service");
-        return domainUserService.createUser(req);
+  public Long createUser(UserDTO req) {
+    log.info("create user in application service");
+    return domainUserService.createUser(req);
+  }
+
+  public void updateUser(UserDTO req) {
+    log.info("update user in application service");
+    if (StringUtils.isEmpty(req.getId())) {
+      log.error("user id is empty");
+      throw new DomainUserException("user id is empty");
+    }
+    domainUserService.updateUser(req);
+  }
+
+  public UserDTO getUser(String userId) {
+    log.info("get user in application service");
+    if (StringUtils.isEmpty(userId)) {
+      log.error("user id is empty");
+      throw new DomainUserException("user id is empty");
+    }
+    UserAggregate user = domainUserService.getUserById(userId);
+    return UserDTO.builder().id(user.getId()).name(user.getName()).email(user.getEmail())
+        .phone(user.getPhone()).gender(user.getGender()).wishlists(user.getWishlists()).build();
+  }
+
+  public List<UserDTO> getAllUsers() {
+    log.info("get all user in application service");
+    List<UserAggregate> list = domainUserService.findAllUser();
+    return list.stream().map(user -> UserDTO.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .email(user.getEmail())
+            .phone(user.getPhone())
+            .gender(user.getGender())
+            .wishlists(user.getWishlists())
+            .build())
+        .collect(Collectors.toList());
+  }
+
+  public void deleteUser(String userId) {
+    log.info("delete user in application service");
+    if (StringUtils.isEmpty(userId)) {
+      log.error("user id is empty");
+      throw new DomainUserException("user id is empty");
+    }
+    domainUserService.deleteUserById(userId);
+  }
+
+  public void addWishlist(UserDTO req) {
+    log.info("add wishlist in application service");
+    if (StringUtils.isEmpty(req.getId())) {
+      log.error("user id is empty");
+      throw new DomainUserException("user id is empty");
     }
 
-    public void updateUser(UserDTO req) {
-        log.info("update user in application service");
-        if (StringUtils.isEmpty(req.getId())) {
-            log.error("user id is empty");
-            throw new DomainUserException("user id is empty");
-        }
-        domainUserService.updateUser(req);
+    if (CollectionUtils.isEmpty(req.getWishlists())) {
+      log.error("wishlist is empty");
+      throw new DomainUserException("wishlist is empty");
     }
-
-    public UserDTO getUser(String userId) {
-        log.info("get user in application service");
-        if (StringUtils.isEmpty(userId)) {
-            log.error("user id is empty");
-            throw new DomainUserException("user id is empty");
-        }
-        UserAggregate user = domainUserService.getUserById(userId);
-        return UserDTO.builder().id(user.getId()).name(user.getName()).email(user.getEmail()).phone(user.getPhone()).gender(user.getGender()).wishlists(user.getWishlists()).build();
-    }
-
-    public List<UserDTO> getAllUsers() {
-        log.info("get all user in application service");
-        List<UserAggregate> list = domainUserService.findAllUser();
-        return list.stream().map(user->UserDTO.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .phone(user.getPhone())
-                        .gender(user.getGender())
-                        .wishlists(user.getWishlists())
-                        .build())
-                        .collect(Collectors.toList());
-    }
-
-    public void deleteUser(String userId) {
-        log.info("delete user in application service");
-        if (StringUtils.isEmpty(userId)) {
-            log.error("user id is empty");
-            throw new DomainUserException("user id is empty");
-        }
-        domainUserService.deleteUserById(userId);
-    }
-
-    public void addWishlist(UserDTO req) {
-        log.info("add wishlist in application service");
-        if (StringUtils.isEmpty(req.getId())) {
-            log.error("user id is empty");
-            throw new DomainUserException("user id is empty");
-        }
-
-        if (CollectionUtils.isEmpty(req.getWishlists())) {
-            log.error("wishlist is empty");
-            throw new DomainUserException("wishlist is empty");
-        }
-        domainUserService.addWishlist(req.getId(), req.getWishlists());
-    }
+    domainUserService.addWishlist(req.getId(), req.getWishlists());
+  }
 
 }

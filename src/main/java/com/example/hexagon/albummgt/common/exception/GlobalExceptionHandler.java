@@ -17,28 +17,32 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    private ObjectMapper mapper = new ObjectMapper();
+  private ObjectMapper mapper = new ObjectMapper();
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ResponseEntity<ResponseMsg> handleHttpRequestException(HttpServletRequest request, Exception ex) throws JsonProcessingException {
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler
+  public ResponseEntity<ResponseMsg> handleHttpRequestException(HttpServletRequest request,
+      Exception ex) throws JsonProcessingException {
 
-        if (ex instanceof ClientAbortException) {
-            log.error("Exception:", ex.getMessage());
-        } else {
-            log.info(mapper.writeValueAsString(request.getParameterMap()));
-            log.error("Exception:", ex);
-        }
-        return new ResponseEntity<ResponseMsg>(ResponseMsg.fail(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    if (ex instanceof ClientAbortException) {
+      log.error("Exception:", ex.getMessage());
+    } else {
+      log.info(mapper.writeValueAsString(request.getParameterMap()));
+      log.error("Exception:", ex);
     }
+    return new ResponseEntity<ResponseMsg>(ResponseMsg.fail(ex.getMessage()),
+        HttpStatus.BAD_REQUEST);
+  }
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(DomainUserException.class)
-    public ResponseEntity<ResponseMsg> handleUserException(HttpServletRequest request, Exception ex) throws JsonProcessingException {
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(DomainUserException.class)
+  public ResponseEntity<ResponseMsg> handleUserException(HttpServletRequest request, Exception ex)
+      throws JsonProcessingException {
 
-        log.info(mapper.writeValueAsString(request.getParameterMap()));
-        log.error("Exception:", ex);
-        return new ResponseEntity<ResponseMsg>(ResponseMsg.fail(ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
+    log.info(mapper.writeValueAsString(request.getParameterMap()));
+    log.error("Exception:", ex);
+    return new ResponseEntity<ResponseMsg>(ResponseMsg.fail(ex.getMessage()),
+        HttpStatus.BAD_REQUEST);
+  }
 
 }

@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ArtistRepository extends JpaRepository<ArtistEntity,Long>{
+public interface ArtistRepository extends JpaRepository<ArtistEntity, Long> {
 
-    ArtistEntity findByAlbumId(Long albumId);
+  ArtistEntity findByAlbumId(Long albumId);
 
-    @Modifying
-    void deleteByAlbumId(Long albumId);
-    List<ArtistEntity> findAllByAlbumIdIn(List<Long> albumIds);
+  @Modifying
+  void deleteByAlbumId(Long albumId);
+
+  List<ArtistEntity> findAllByAlbumIdIn(List<Long> albumIds);
 }
