@@ -1,6 +1,6 @@
 package com.example.hexagon.albummgt.user.driven.persistent;
 
-import com.example.hexagon.albummgt.user.core.domain.DomainUserException;
+import com.example.hexagon.albummgt.user.core.exception.DomainUserException;
 import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistent;
 import jakarta.transaction.Transactional;

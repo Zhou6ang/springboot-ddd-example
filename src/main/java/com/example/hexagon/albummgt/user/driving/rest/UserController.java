@@ -3,10 +3,7 @@ package com.example.hexagon.albummgt.user.driving.rest;
 import com.example.hexagon.albummgt.common.response.ResponseMsg;
 import com.example.hexagon.albummgt.user.core.ApplicationUserService;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,12 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/users")
 @Tag(name = "User", description = "User API")
-@OpenAPIDefinition(
-    info =
-        @Info(
-            title = "My API",
-            version = "v1",
-            contact = @Contact(name = "Gang", email = "gang@example.com")))
 public class UserController {
 
   private final ApplicationUserService applicationUserService;
@@ -50,7 +41,7 @@ public class UserController {
   @GetMapping("/{userId}")
   public ResponseMsg getUserById(@PathVariable("userId") String userId) {
     UserDTO result = applicationUserService.getUser(userId);
-    return ResponseMsg.succ("get user successfully", result);
+    return ResponseMsg.success("get user successfully", result);
   }
 
   @Operation(summary = "Get all users")
@@ -61,7 +52,7 @@ public class UserController {
       })
   @GetMapping("")
   public ResponseMsg getAllUser() {
-    return ResponseMsg.succ("get all users successfully", applicationUserService.getAllUsers());
+    return ResponseMsg.success("get all users successfully", applicationUserService.getAllUsers());
   }
 
   @Operation(summary = "Add a new user")
@@ -74,7 +65,7 @@ public class UserController {
   @PostMapping("")
   public ResponseMsg createUser(@RequestBody UserDTO request) {
     Long userId = applicationUserService.createUser(request);
-    return ResponseMsg.succ(
+    return ResponseMsg.success(
         "Add a new user successfully", UserDTO.builder().id(userId.toString()).build());
   }
 
@@ -89,7 +80,7 @@ public class UserController {
   @PutMapping("")
   public ResponseMsg updateUser(@RequestBody UserDTO request) {
     applicationUserService.updateUser(request);
-    return ResponseMsg.succ("update user success, id=" + request.getId());
+    return ResponseMsg.success("update user success, id=" + request.getId());
   }
 
   @Operation(summary = "Delete a user by its id")
@@ -103,6 +94,6 @@ public class UserController {
   @DeleteMapping("/{userId}")
   public ResponseMsg delete(@PathVariable("userId") String userId) {
     applicationUserService.deleteUser(userId);
-    return ResponseMsg.succ("delete user success, id=" + userId);
+    return ResponseMsg.success("delete user success, id=" + userId);
   }
 }

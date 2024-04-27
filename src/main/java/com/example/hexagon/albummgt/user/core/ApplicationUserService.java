@@ -1,6 +1,6 @@
 package com.example.hexagon.albummgt.user.core;
 
-import com.example.hexagon.albummgt.user.core.domain.DomainUserException;
+import com.example.hexagon.albummgt.user.core.exception.DomainUserException;
 import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import com.example.hexagon.albummgt.user.core.domain.service.DomainUserService;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;

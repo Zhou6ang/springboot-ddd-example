@@ -32,13 +32,13 @@ public class AlbumController {
   public ResponseMsg getAlbumById(@PathVariable("userId") String userId,
       @PathVariable("id") String id) {
     AlbumDTO result = applicationAlbumService.getAlbum(userId);
-    return ResponseMsg.succ("get album successfully", result);
+    return ResponseMsg.success("get album successfully", result);
   }
 
   @Operation(summary = "Retrieve all albums for a user")
   @GetMapping("")
   public ResponseMsg getAllAlbum(@PathVariable("userId") String userId) {
-    return ResponseMsg.succ("get all albums successfully", applicationAlbumService.getAllAlbums());
+    return ResponseMsg.success("get all albums successfully", applicationAlbumService.getAllAlbums());
   }
 
   @Operation(summary = "Create an album for a user")
@@ -47,7 +47,7 @@ public class AlbumController {
       @RequestBody AlbumDTO request) {
     request.setUserId(userId);
     Long albumId = applicationAlbumService.createAlbum(request);
-    return ResponseMsg.succ("create album successfully, id: " + albumId);
+    return ResponseMsg.success("create album successfully, id: " + albumId);
   }
 
   @Operation(summary = "Update an album for a user")
@@ -56,7 +56,7 @@ public class AlbumController {
       @RequestBody AlbumDTO request) {
     request.setUserId(userId);
     applicationAlbumService.updateAlbum(request);
-    return ResponseMsg.succ("update album success, id: " + request.getId());
+    return ResponseMsg.success("update album success, id: " + request.getId());
   }
 
   @Operation(summary = "Delete an album by its id for a user")
@@ -64,6 +64,6 @@ public class AlbumController {
   public ResponseMsg delete(@PathVariable("userId") String userId,
       @PathVariable("id") String albumId) {
     applicationAlbumService.deleteAlbum(albumId);
-    return ResponseMsg.succ("delete album success, id: " + userId);
+    return ResponseMsg.success("delete album success, id: " + userId);
   }
 }

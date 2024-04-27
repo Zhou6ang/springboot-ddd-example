@@ -3,7 +3,6 @@ package com.example.hexagon.albummgt.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.http.ResponseEntity;
 
 @Data
 @Builder
@@ -14,15 +13,15 @@ public class ResponseMsg {
   private String msg;
   private Object data;
 
-  public static ResponseMsg succ(String msg) {
-    return succ(0, msg, null);
+  public static ResponseMsg success(String msg) {
+    return success(0, msg, null);
   }
 
-  public static ResponseMsg succ(String msg, Object data) {
-    return succ(0, msg, data);
+  public static ResponseMsg success(String msg, Object data) {
+    return success(0, msg, data);
   }
 
-  private static ResponseMsg succ(int code, String msg, Object data) {
+  private static ResponseMsg success(int code, String msg, Object data) {
     return ResponseMsg.builder().code(code).msg(msg).data(data).build();
   }
 

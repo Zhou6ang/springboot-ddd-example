@@ -1,4 +1,4 @@
-package com.example.hexagon.albummgt.user.core.domain;
+package com.example.hexagon.albummgt.user.core.exception;
 
 public class DomainUserException extends RuntimeException {
 

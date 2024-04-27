@@ -1,7 +1,8 @@
 package com.example.hexagon.albummgt.common.exception;
 
 import com.example.hexagon.albummgt.common.response.ResponseMsg;
-import com.example.hexagon.albummgt.user.core.domain.DomainUserException;
+import com.example.hexagon.albummgt.user.core.exception.DomainUserException;
+import com.example.hexagon.albummgt.user.core.exception.EchoException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(DomainUserException.class)
+  @ExceptionHandler({DomainUserException.class, EchoException.class})
   public ResponseEntity<ResponseMsg> handleUserException(HttpServletRequest request, Exception ex)
       throws JsonProcessingException {
 
