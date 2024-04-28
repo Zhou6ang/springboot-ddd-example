@@ -2,6 +2,7 @@ package com.example.hexagon.albummgt.user.driven.config;
 
 import com.example.hexagon.albummgt.user.core.ApplicationEchoService;
 import com.example.hexagon.albummgt.user.core.ApplicationUserService;
+import com.example.hexagon.albummgt.user.core.domain.ports.HttpbinService;
 import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistent;
 import com.example.hexagon.albummgt.user.core.domain.service.DomainUserService;
 import com.example.hexagon.albummgt.user.driven.persistent.DefaultUserPersistentAdapter;
@@ -33,7 +34,7 @@ public class SpringBeanConfig {
 
   @Bean
   ApplicationEchoService applicationEchoService(
-      @Qualifier("echoRestClient") RestClient restClient) {
-    return new ApplicationEchoService(restClient);
+      @Qualifier("echoRestClient") RestClient restClient, HttpbinService httpbinService) {
+    return new ApplicationEchoService(restClient, httpbinService);
   }
 }

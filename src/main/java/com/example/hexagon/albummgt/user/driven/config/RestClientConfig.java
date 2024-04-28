@@ -1,15 +1,16 @@
 package com.example.hexagon.albummgt.user.driven.config;
 
+import com.example.hexagon.albummgt.user.core.domain.ports.HttpbinService;
 import com.example.hexagon.albummgt.user.core.exception.EchoException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.support.RestClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class RestClientConfig {
 
   @Bean
   RestClient echoRestClient() {
-//    HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+    //HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(restClientProperties.getConnectionTimeout());
     requestFactory.setReadTimeout(restClientProperties.getReadTimeout());
@@ -33,5 +34,26 @@ public class RestClientConfig {
             })
         .requestFactory(requestFactory)
         .build();
+  }
+
+  @Bean
+  HttpbinService httpbinRestClient() {
+    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    requestFactory.setConnectTimeout(restClientProperties.getConnectionTimeout());
+    requestFactory.setReadTimeout(restClientProperties.getReadTimeout());
+    RestClient client =
+        RestClient.builder()
+            .baseUrl(restClientProperties.getBaseUrl())
+            .defaultStatusHandler(
+                HttpStatusCode::isError,
+                (req, res) -> {
+                  log.error("Error response for http bin: {}", res.getStatusCode());
+                  throw new EchoException("Client error: " + res.getStatusCode());
+                })
+            .requestFactory(requestFactory)
+            .build();
+    RestClientAdapter adapter = RestClientAdapter.create(client);
+    HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+    return factory.createClient(HttpbinService.class);
   }
 }

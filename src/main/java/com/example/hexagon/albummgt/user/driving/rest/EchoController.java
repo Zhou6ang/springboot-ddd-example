@@ -91,4 +91,40 @@ public class EchoController {
     Object result = applicationEchoService.echoDelete(url, headers, params);
     return ResponseMsg.success("execute DELETE successfully", result);
   }
+
+  @Operation(summary = "Echo httpbin GET")
+  @ApiResponses(
+      value = {
+          @ApiResponse(responseCode = "200", description = "Echo httpbin GET successfully"),
+          @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Target url not found",
+              content = @Content),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+      })
+  @GetMapping("/httpbin")
+  public ResponseMsg httpBinGet(
+      @RequestHeader HttpHeaders headers,
+      @Schema(hidden = true) @RequestParam MultiValueMap<String, String> params) {
+    Object result = applicationEchoService.httpBinGet(headers, params);
+
+    return ResponseMsg.success("execute httpbin GET successfully", result);
+  }
+
+  @Operation(summary = "Echo httpbin POST")
+  @ApiResponses(
+      value = {
+          @ApiResponse(responseCode = "200", description = "execute httpbin POST successfully"),
+          @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+      })
+  @PostMapping("/httpbin")
+  public ResponseMsg httpBinPost(
+      @RequestHeader HttpHeaders headers,
+      @Schema(hidden = true) @RequestParam MultiValueMap<String, String> params,
+      @RequestBody Object body) {
+    Object result = applicationEchoService.httpBinPost(headers, params, body);
+    return ResponseMsg.success("execute POST successfully", result);
+  }
 }

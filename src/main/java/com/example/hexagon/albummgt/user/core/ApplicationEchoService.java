@@ -1,5 +1,6 @@
 package com.example.hexagon.albummgt.user.core;
 
+import com.example.hexagon.albummgt.user.core.domain.ports.HttpbinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestClient;
 public class ApplicationEchoService {
 
   private final RestClient restClient;
+  private final HttpbinService httpbinService;
 
   public Object echoGet(String url, HttpHeaders headers, MultiValueMap<String, String> params) {
     // remove Content-Length header if it exists
@@ -59,6 +61,22 @@ public class ApplicationEchoService {
             .toEntity(Object.class);
 
     log.info("echoDelete result: {}", result);
+    return result.getBody();
+  }
+
+  public Object httpBinGet(HttpHeaders headers, MultiValueMap<String, String> params) {
+    // remove Content-Length header if it exists, otherwise an exception will be thrown.
+    headers.remove(HttpHeaders.CONTENT_LENGTH);
+    ResponseEntity result = httpbinService.httpbinGet(headers,params);
+    log.info("httpBinGet result: {}", result);
+    return result.getBody();
+  }
+
+  public Object httpBinPost(HttpHeaders headers, MultiValueMap<String, String> params, Object body) {
+    // remove Content-Length header if it exists, otherwise an exception will be thrown.
+    headers.remove(HttpHeaders.CONTENT_LENGTH);
+    ResponseEntity result = httpbinService.httpbinPost(headers,params,body);
+    log.info("httpBinPost result: {}", result);
     return result.getBody();
   }
 }
