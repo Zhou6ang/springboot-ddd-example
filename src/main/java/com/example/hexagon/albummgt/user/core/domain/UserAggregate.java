@@ -1,15 +1,17 @@
 package com.example.hexagon.albummgt.user.core.domain;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserAggregate {
 
   private String id;
