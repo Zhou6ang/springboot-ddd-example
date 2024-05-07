@@ -10,6 +10,8 @@ import com.example.hexagon.albummgt.user.driven.cache.DefaultUserCacheAdapter;
 import com.example.hexagon.albummgt.user.driven.persistent.DefaultUserPersistentAdapter;
 import com.example.hexagon.albummgt.user.driven.persistent.UserRepository;
 import com.example.hexagon.albummgt.user.driven.persistent.WishItemRepository;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +44,8 @@ public class SpringBeanConfig {
   }
 
   @Bean
-  UserCache userCache(RedisTemplate redisTemplate) {
-    return new DefaultUserCacheAdapter(redisTemplate);
+  UserCache userCache(
+      RedisTemplate redisTemplate, @Autowired(required = false) RedissonClient redissonClient) {
+    return new DefaultUserCacheAdapter(redisTemplate, redissonClient);
   }
 }
