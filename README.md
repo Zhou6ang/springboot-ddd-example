@@ -3,7 +3,11 @@ links:
   - https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/
   - https://www.baeldung.com/hexagonal-architecture-ddd-spring
   - https://www.baeldung.com/spring-persisting-ddd-aggregates
-  
+
+## Request Https URL With SSL Certificate
+1. download/copy ssl certificate to resource folder, e.g. cert.crt
+2. add ssl bundle to application.properties
+3. use it RestClient.builder().apply(RestClientSsl.fromBundle("myhttpshost")).build(), more detail in SpringBeanConfig.java
 
 ## Azure Web App Deployed by Azure Pipeline Example
 1. Create azure portal and devops account

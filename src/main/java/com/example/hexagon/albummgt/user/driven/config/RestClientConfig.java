@@ -4,6 +4,7 @@ import com.example.hexagon.albummgt.user.core.domain.ports.HttpbinService;
 import com.example.hexagon.albummgt.user.core.exception.EchoException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.web.client.RestClientSsl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatusCode;
@@ -20,7 +21,7 @@ public class RestClientConfig {
   private final RestClientProperties restClientProperties;
 
   @Bean
-  RestClient echoRestClient() {
+  RestClient echoRestClient(RestClientSsl restClientSsl) {
     //HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(restClientProperties.getConnectionTimeout());
@@ -33,6 +34,24 @@ public class RestClientConfig {
               throw new EchoException("Client error: " + res.getStatusCode());
             })
         .requestFactory(requestFactory)
+        .build();
+  }
+
+  @Bean
+  RestClient localhostRestClient(RestClientSsl restClientSsl) {
+    //HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    requestFactory.setConnectTimeout(restClientProperties.getConnectionTimeout());
+    requestFactory.setReadTimeout(restClientProperties.getReadTimeout());
+    return RestClient.builder()
+        .defaultStatusHandler(
+            HttpStatusCode::isError,
+            (req, res) -> {
+              log.error("Error response: {}", res.getStatusCode());
+              throw new EchoException("Client error: " + res.getStatusCode());
+            })
+        .requestFactory(requestFactory)
+        .apply(restClientSsl.fromBundle("myhttpshost"))
         .build();
   }
 

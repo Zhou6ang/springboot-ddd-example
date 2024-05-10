@@ -39,8 +39,8 @@ public class SpringBeanConfig {
 
   @Bean
   ApplicationEchoService applicationEchoService(
-      @Qualifier("echoRestClient") RestClient restClient, HttpbinService httpbinService) {
-    return new ApplicationEchoService(restClient, httpbinService);
+      @Qualifier("echoRestClient") RestClient restClient, RestClient localhostRestClient, HttpbinService httpbinService) {
+    return new ApplicationEchoService(restClient,localhostRestClient, httpbinService);
   }
 
   @Bean

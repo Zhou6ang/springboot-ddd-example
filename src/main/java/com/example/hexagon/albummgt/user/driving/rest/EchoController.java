@@ -2,7 +2,9 @@ package com.example.hexagon.albummgt.user.driving.rest;
 
 import com.example.hexagon.albummgt.common.response.ResponseMsg;
 import com.example.hexagon.albummgt.user.core.ApplicationEchoService;
+import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,7 +57,9 @@ public class EchoController {
       })
   @GetMapping
   public ResponseMsg echoGet(
-      @RequestParam("url") String url,
+      @Parameter(required = true, example = "https://localhost:8888/api/v1/users")
+          @RequestParam("url")
+          String url,
       @RequestHeader HttpHeaders headers,
       @Schema(hidden = true) @RequestParam MultiValueMap<String, String> params) {
     params.remove("url");
@@ -72,10 +76,10 @@ public class EchoController {
       })
   @PostMapping()
   public ResponseMsg echoPost(
-      @RequestParam("url") String url,
+      @Parameter(example = "https://localhost:8888/api/v1/users") @RequestParam("url") String url,
       @RequestHeader HttpHeaders headers,
       @Schema(hidden = true) @RequestParam MultiValueMap<String, String> params,
-      @RequestBody(required = false) Object body) {
+      @RequestBody(required = false) UserDTO body) {
     params.remove("url");
     Object result = applicationEchoService.echoPost(url, headers, params, body);
     return ResponseMsg.success("execute POST successfully", result);
@@ -94,7 +98,8 @@ public class EchoController {
       })
   @DeleteMapping
   public ResponseMsg echoDelete(
-      @RequestParam("url") String url,
+      @Parameter(example = "https://localhost:8888/api/v1/users/xxx") @RequestParam("url")
+          String url,
       @RequestHeader HttpHeaders headers,
       @Schema(hidden = true) @RequestParam MultiValueMap<String, String> params) {
     params.remove("url");

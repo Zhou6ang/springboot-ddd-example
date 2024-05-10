@@ -14,13 +14,14 @@ import org.springframework.web.client.RestClient;
 public class ApplicationEchoService {
 
   private final RestClient restClient;
+  private final RestClient localhostClient;
   private final HttpbinService httpbinService;
 
   public Object echoGet(String url, HttpHeaders headers, MultiValueMap<String, String> params) {
     // remove Content-Length header if it exists
     headers.remove(HttpHeaders.CONTENT_LENGTH);
     Object result =
-        restClient
+        getRestClient(url)
             .get()
             .uri(params.isEmpty() ? url : url + "?" + params.toSingleValueMap())
             .accept(MediaType.APPLICATION_JSON)
@@ -31,12 +32,19 @@ public class ApplicationEchoService {
     return result;
   }
 
+  private RestClient getRestClient(String url) {
+    if(url.contains("localhost")){
+      return localhostClient;
+    }
+    return restClient;
+  }
+
   public Object echoPost(
       String url, HttpHeaders headers, MultiValueMap<String, String> params, Object body) {
     // remove Content-Length header if it exists
     headers.remove(HttpHeaders.CONTENT_LENGTH);
     ResponseEntity result =
-        restClient
+        getRestClient(url)
             .post()
             .uri(params.isEmpty() ? url : url + "?" + params.toSingleValueMap())
             .accept(MediaType.APPLICATION_JSON)
@@ -52,7 +60,7 @@ public class ApplicationEchoService {
     // remove Content-Length header if it exists
     headers.remove(HttpHeaders.CONTENT_LENGTH);
     ResponseEntity result =
-        restClient
+        getRestClient(url)
             .delete()
             .uri(params.isEmpty() ? url : url + "?" + params.toSingleValueMap())
             .accept(MediaType.APPLICATION_JSON)
