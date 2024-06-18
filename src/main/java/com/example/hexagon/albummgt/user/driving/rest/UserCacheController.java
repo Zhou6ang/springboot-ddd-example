@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/users/cache")
-@Tag(name = "Cache", description = "User Cache API")
+@Tag(name = "Cache", description = "Test with RedisTemplate + Redisson as cache")
 public class UserCacheController {
 
   private final ApplicationUserService applicationUserService;

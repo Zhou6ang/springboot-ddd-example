@@ -26,7 +26,8 @@ public class ArtistEntity {
   private Long id;
   private String name;
   private String biography;
-  private String birthDay;
+  @Column(name = "birthday")
+  private String birthday;
   @Column(name = "album_id")
   private long albumId;
   @Column(name = "created_date")
@@ -42,7 +43,7 @@ public class ArtistEntity {
         .id(item.getId())
         .name(item.getName())
         .biography(item.getBiography())
-        .birthDay(item.getBirthDay())
+        .birthday(item.getBirthDay())
         .albumId(item.getAlbumId())
         .updatedDate(item.getUpdatedDate() != null ? item.getUpdatedDate()
             : Timestamp.valueOf(LocalDateTime.now()))
@@ -54,7 +55,7 @@ public class ArtistEntity {
         .id(entity.getId())
         .name(entity.getName())
         .biography(entity.getBiography())
-        .birthDay(entity.getBirthDay())
+        .birthDay(entity.getBirthday())
         .albumId(entity.getAlbumId())
         .updatedDate(entity.getUpdatedDate())
         .build();

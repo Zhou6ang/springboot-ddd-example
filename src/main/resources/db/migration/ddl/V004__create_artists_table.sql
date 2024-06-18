@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS artists (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     biography VARCHAR(255),
-    birthDay VARCHAR(255),
+    birthday VARCHAR(255),
     album_id BIGINT,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP

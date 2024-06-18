@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/echo")
-@Tag(name = "Echo", description = "Echo API")
+@Tag(name = "Echo", description = "Test with RestClient")
 // @SecurityScheme(type = SecuritySchemeType.HTTP, scheme = "basic",name = "basicAuth", in =
 // SecuritySchemeIn.HEADER)
 @SecurityScheme(
