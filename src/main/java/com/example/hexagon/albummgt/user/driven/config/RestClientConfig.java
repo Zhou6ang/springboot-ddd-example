@@ -2,6 +2,7 @@ package com.example.hexagon.albummgt.user.driven.config;
 
 import com.example.hexagon.albummgt.user.core.domain.ports.HttpbinService;
 import com.example.hexagon.albummgt.user.core.exception.EchoException;
+import java.net.http.HttpClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.client.RestClientSsl;
@@ -57,7 +58,11 @@ public class RestClientConfig {
   }
 
   @Bean
-  HttpbinService httpbinRestClient() {
+  HttpbinService httpbinRestClient() throws Exception {
+    // skip ssl verification
+//    var httpclient = HttpClient.newBuilder().sslContext(SkipSslClientHttpRequestFactory.createSslContext()).build();
+//    JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpclient);
+
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(restClientProperties.getConnectionTimeout());
     requestFactory.setReadTimeout(restClientProperties.getReadTimeout());
