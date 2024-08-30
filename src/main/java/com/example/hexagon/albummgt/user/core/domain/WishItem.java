@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WishItem {
 
-  @Hidden private long id;
+//  @Hidden
+  private long id;
 
   @Schema(example = "The Forgotten Night", minLength = 1, maxLength = 50)
   private String name;

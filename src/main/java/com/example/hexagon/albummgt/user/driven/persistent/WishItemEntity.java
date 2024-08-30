@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,32 +27,37 @@ public class WishItemEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  private long id;
   private String name;
   private String singer;
   @Column(name = "release_time")
   private String releaseTime;
   private String website;
-  @Column(name = "user_id")
-  private long userId;
-  @Column(name = "created_date")
+//  @Column(name = "user_id")
+//  private long userId;
+  @Column(name = "created_date", insertable = false, updatable = false)
   private Timestamp createdDate;
-  @Column(name = "updated_date")
+  @Column(name = "updated_date", insertable = false, updatable = false)
   private Timestamp updatedDate;
+
+  @ManyToOne
+  @JoinColumns({
+      @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+  })
+  private UserEntity user;
 
   public WishItemEntity() {
   }
 
-  public static WishItemEntity fromUserAggregate(WishItem item) {
+  public static WishItemEntity fromUserAggregate(WishItem item, UserEntity user) {
     return WishItemEntity.builder()
         .id(item.getId())
         .name(item.getName())
         .singer(item.getSinger())
         .releaseTime(item.getReleaseTime())
         .website(item.getWebsite())
-        .userId(item.getUserId())
-        .updatedDate(item.getUpdatedDate() != null ? item.getUpdatedDate()
-            : Timestamp.valueOf(LocalDateTime.now()))
+//        .userId(item.getUserId())
+        .user(user)
         .build();
   }
 
@@ -60,7 +68,7 @@ public class WishItemEntity {
         .singer(entity.getSinger())
         .releaseTime(entity.getReleaseTime())
         .website(entity.getWebsite())
-        .userId(entity.getUserId())
+        .userId(entity.getUser().getId())
         .updatedDate(entity.getUpdatedDate())
         .build();
   }
