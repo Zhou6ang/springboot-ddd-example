@@ -67,6 +67,7 @@ public class UserController {
       @RequestParam(value = "wishSinger", required = false) String wishSinger,
       @RequestParam(value = "wishReleaseTime", required = false) String wishReleaseTime,
       @RequestParam(value = "wishUserId", required = false) Long wishUserId,
+      @RequestParam(value = "city", required = false) String city,
       @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
       @RequestParam(value = "pageSize", required = false, defaultValue = "5") Integer pageSize,
       @RequestParam(value = "sortBy", required = false,defaultValue = "id") String sortBy,
@@ -82,6 +83,7 @@ public class UserController {
             .wishSinger(wishSinger)
             .wishReleaseTime(wishReleaseTime)
             .wishUserId(wishUserId)
+            .city(city)
             .pageSize(pageSize)
             .pageNumber(pageNum)
             .sortBy(sortBy)

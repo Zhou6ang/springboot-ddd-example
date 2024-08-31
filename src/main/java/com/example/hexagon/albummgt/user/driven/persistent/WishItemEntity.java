@@ -9,14 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @DynamicUpdate
 @Data
@@ -28,38 +25,40 @@ public class WishItemEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
   private String name;
   private String singer;
+
   @Column(name = "release_time")
   private String releaseTime;
+
   private String website;
+
   @Column(name = "created_date", insertable = false, updatable = false)
   private Timestamp createdDate;
+
   @Column(name = "updated_date", insertable = false, updatable = false)
   private Timestamp updatedDate;
 
   @ManyToOne
-  @JoinColumns({
-      @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-  })
+  @JoinColumns({@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)})
   private UserEntity user;
 
-  public WishItemEntity() {
-  }
+  public WishItemEntity() {}
 
-  public static WishItemEntity fromUserAggregate(WishItem item, UserEntity user) {
+  public static WishItemEntity toEntity(WishItem item, UserEntity user) {
     return WishItemEntity.builder()
         .id(item.getId())
         .name(item.getName())
         .singer(item.getSinger())
         .releaseTime(item.getReleaseTime())
         .website(item.getWebsite())
-//        .userId(item.getUserId())
+        //        .userId(item.getUserId())
         .user(user)
         .build();
   }
 
-  public static WishItem toWishItem(WishItemEntity entity) {
+  public static WishItem toDTO(WishItemEntity entity) {
     return WishItem.builder()
         .id(entity.getId())
         .name(entity.getName())

@@ -7,7 +7,6 @@ import com.example.hexagon.albummgt.user.driving.dto.UserRequest;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,8 +42,9 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
     var userEntity = UserEntity.toUserEntity(userAggregate);
     userEntity.setWishItem(
         userAggregate.getWishlists().stream()
-            .map(x -> WishItemEntity.fromUserAggregate(x, userEntity))
+            .map(x -> WishItemEntity.toEntity(x, userEntity))
             .toList());
+    userEntity.setAddress(AddressEntity.toAddressEntity(userAggregate.getAddress(), userEntity));
     UserEntity user = userRepository.save(userEntity);
     return user.getId();
   }
@@ -61,8 +61,9 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
     var userEntity = UserEntity.toUserEntity(userAggregate);
     userEntity.setWishItem(
         userAggregate.getWishlists().stream()
-            .map(x -> WishItemEntity.fromUserAggregate(x, userEntity))
+            .map(x -> WishItemEntity.toEntity(x, userEntity))
             .toList());
+    userEntity.setAddress(AddressEntity.toAddressEntity(userAggregate.getAddress(), userEntity));
     UserEntity user = userRepository.save(userEntity);
     return user.getId();
   }
@@ -77,14 +78,15 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
                 Direction.fromOptionalString(request.getSortDirection()).orElse(Direction.DESC),
                 request.getSortBy().split(",")));
 
-    var spec =
-        Specification.<UserEntity>where(eq("name", request.getName()))
+      var spec =  Specification.<UserEntity>where(eq("name", request.getName()))
             .and(like("email", request.getEmail()))
             .and(in("id", request.getIds()))
             .and(leftJoinLike("wishItem", "name", request.getWishName()))
             .and(leftJoinLike("wishItem", "singer", request.getWishSinger()))
             .and(leftJoinLike("wishItem", "releaseTime", request.getWishReleaseTime()))
-            .and(leftJoinEq("wishItem", "id", request.getWishUserId()));
+            .and(leftJoinEq("wishItem", "id", request.getWishUserId()))
+            .and(leftJoinLike("address", "city", request.getCity()))
+            .and(fetchAndLeftJoin("address"));
 
     Page<UserEntity> userList = userRepository.findAll(spec, pageRequest);
     return new PageImpl<>(
@@ -123,7 +125,10 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
             .filter(StringUtils::hasText)
             .map(
                 x -> {
-                  var leftJoin = root.join(leftJoinEntity, JoinType.LEFT); // caused N+1 problem if not use batch_fetch_size
+                  var leftJoin =
+                      root.join(
+                          leftJoinEntity,
+                          JoinType.LEFT);
                   return criteriaBuilder.like(leftJoin.get(field), "%" + x + "%");
                 })
             .orElseGet(criteriaBuilder::conjunction);
@@ -144,22 +149,25 @@ public class DefaultUserPersistentAdapter implements UserPersistent {
                 })
             .map(
                 x -> {
-                  var leftJoin = root.join(leftJoinEntity,JoinType.LEFT); // caused N+1 problem if not use batch_fetch_size
+                  var leftJoin =
+                      root.join(
+                          leftJoinEntity,
+                          JoinType.LEFT);
                   return criteriaBuilder.equal(leftJoin.get(field), x);
                 })
             .orElseGet(criteriaBuilder::conjunction);
   }
 
-  static <T> Specification<T> rightJoin(String rightJoinEntity, String field, String value) {
-    return (root, query, criteriaBuilder) ->
-        Optional.ofNullable(value)
-            .filter(StringUtils::hasText)
-            .map(
-                x -> {
-                  var rightJoin = root.join(rightJoinEntity, JoinType.LEFT);
-                  return criteriaBuilder.like(rightJoin.get(field), "%" + x + "%");
-                })
-            .orElseGet(criteriaBuilder::conjunction);
+  static <T> Specification<T> fetchAndLeftJoin(String ... leftJoinEntity) {
+    return (root, query, criteriaBuilder) -> {
+      if (query.getResultType() != Long.class && query.getResultType() != long.class) {
+        for (String entity : leftJoinEntity) {
+          root.fetch(entity, JoinType.LEFT); //TODO only for OneToOne to avoid N+1 problem.
+        }
+        query.distinct(true); // Ensure distinct results to avoid duplicates
+      }
+      return criteriaBuilder.conjunction();
+    };
   }
 
   static <T> boolean isNotEmpty(Collection<T> list) {

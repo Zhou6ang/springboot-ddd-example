@@ -9,12 +9,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.sql.Timestamp;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.BatchSize;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -24,6 +25,7 @@ import org.hibernate.annotations.FetchMode;
 @Entity(name = "users")
 @Builder
 @AllArgsConstructor
+@ToString(exclude = {"wishItem", "address"})
 public class UserEntity {
 
   @Id
@@ -41,12 +43,18 @@ public class UserEntity {
   @Column(name = "updated_date", insertable = false, updatable = false)
   private Timestamp updatedDate;
 
-  @OneToMany(
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  //    @BatchSize(size = 10) or using default_batch_fetch_size to relieve N+1 query problem in properties file.
+  private List<WishItemEntity> wishItem;
+
+  // mappedBy indicates current entity has not foreign key column for relationship, but other child entity has.
+  @OneToOne(
       mappedBy = "user",
       cascade = CascadeType.ALL,
-      orphanRemoval = true)
-//  @BatchSize(size = 10) or using default_batch_fetch_size to present N+1 query problem in properties file.
-  private List<WishItemEntity> wishItem;
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  @Fetch(FetchMode.JOIN) // using root.fetch() to avoid N+1 query problem.
+  private AddressEntity address;
 
   public UserEntity() {}
 
@@ -69,11 +77,13 @@ public class UserEntity {
             .email(user.getEmail())
             .phone(user.getPhone())
             .updateDate(user.getUpdatedDate())
+            .address(AddressEntity.toAddress(user.getAddress()))
             .build();
     userAggregate.addWishlists(
         user.getWishItem() != null
-            ? user.getWishItem().stream().map(WishItemEntity::toWishItem).toList()
+            ? user.getWishItem().stream().map(WishItemEntity::toDTO).toList()
             : null);
+
     return userAggregate;
   }
 }

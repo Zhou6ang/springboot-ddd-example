@@ -29,6 +29,7 @@ public class DomainUserService {
             .email(req.getEmail())
             .phone(req.getPhone())
             .gender(req.getGender())
+            .address(req.getAddress())
             .build();
     aggregate.addWishlists(req.getWishlists());
     if (cacheEnabled) {

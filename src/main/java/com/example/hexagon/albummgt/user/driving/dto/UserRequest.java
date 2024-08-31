@@ -17,4 +17,5 @@ public class UserRequest extends BaseRequest {
   private String wishSinger;
   private String wishReleaseTime;
   private Long wishUserId;
+  private String city;
 }

@@ -56,6 +56,7 @@ public class ApplicationUserService {
         .phone(user.getPhone())
         .gender(user.getGender())
         .wishlists(user.getWishlists())
+        .address(user.getAddress())
         .build();
   }
 
@@ -90,6 +91,7 @@ public class ApplicationUserService {
                         .phone(user.getPhone())
                         .gender(user.getGender())
                         .wishlists(user.getWishlists())
+                        .address(user.getAddress())
                         .build())
             .collect(Collectors.toList()),
         list.getPageable(),
