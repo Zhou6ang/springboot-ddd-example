@@ -3,11 +3,13 @@ package com.example.hexagon.albummgt.user.driving.rest;
 import com.example.hexagon.albummgt.common.response.ResponseMsg;
 import com.example.hexagon.albummgt.user.core.ApplicationUserService;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
+import com.example.hexagon.albummgt.user.driving.dto.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -54,10 +57,38 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Get all users successfully"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
       })
-  @GetMapping("")
-  public ResponseMsg getAllUser() {
+  @GetMapping
+  public ResponseMsg getAllUser(
+      @RequestParam(value = "id", required = false) Set<Long> ids,
+      @RequestParam(value = "name", required = false) String name,
+      @RequestParam(value = "email", required = false) String email,
+      @RequestParam(value = "phone", required = false) String phone,
+      @RequestParam(value = "wishName", required = false) String wishName,
+      @RequestParam(value = "wishSinger", required = false) String wishSinger,
+      @RequestParam(value = "wishReleaseTime", required = false) String wishReleaseTime,
+      @RequestParam(value = "wishUserId", required = false) Long wishUserId,
+      @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+      @RequestParam(value = "pageSize", required = false, defaultValue = "5") Integer pageSize,
+      @RequestParam(value = "sortBy", required = false,defaultValue = "id") String sortBy,
+      @RequestParam(value = "sortDirection", required = false) String sortDirection) {
     log.info("my secret is {}", mySecret);
-    return ResponseMsg.success("get all users successfully", applicationUserService.getAllUsers());
+    var request =
+        UserRequest.builder()
+            .ids(ids)
+            .name(name)
+            .email(email)
+            .phone(phone)
+            .wishName(wishName)
+            .wishSinger(wishSinger)
+            .wishReleaseTime(wishReleaseTime)
+            .wishUserId(wishUserId)
+            .pageSize(pageSize)
+            .pageNumber(pageNum)
+            .sortBy(sortBy)
+            .sortDirection(sortDirection)
+            .build();
+    return ResponseMsg.success(
+        "get all users successfully", applicationUserService.getAllUsers(request));
   }
 
   @Operation(summary = "Add a new user")

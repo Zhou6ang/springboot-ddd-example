@@ -2,8 +2,10 @@ package com.example.hexagon.albummgt.user.core.domain.ports;
 
 import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 
+import com.example.hexagon.albummgt.user.driving.dto.UserRequest;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 public interface UserPersistent {
 
@@ -15,5 +17,5 @@ public interface UserPersistent {
 
   Long update(UserAggregate userAggregate);
 
-  List<UserAggregate> findAll();
+  Page<UserAggregate> findAll(UserRequest request);
 }

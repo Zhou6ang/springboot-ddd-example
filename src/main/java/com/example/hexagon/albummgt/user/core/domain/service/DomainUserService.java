@@ -6,11 +6,13 @@ import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import com.example.hexagon.albummgt.user.core.domain.WishItem;
 import com.example.hexagon.albummgt.user.core.domain.ports.UserPersistent;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
+import com.example.hexagon.albummgt.user.driving.dto.UserRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -94,11 +96,13 @@ public class DomainUserService {
     }
   }
 
-  public List<UserAggregate> findAllUser(boolean fromCache) {
+  public List<UserAggregate> findAllUserFromCache() {
+    log.info("find all user with cache in domain service");
+    return userCache.getAll();
+  }
+
+  public Page<UserAggregate> findAllUser(UserRequest req) {
     log.info("find all user in domain service");
-    if (fromCache){
-      return userCache.getAll();
-    }
-    return userPersistent.findAll();
+    return userPersistent.findAll(req);
   }
 }

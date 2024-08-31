@@ -33,8 +33,6 @@ public class WishItemEntity {
   @Column(name = "release_time")
   private String releaseTime;
   private String website;
-//  @Column(name = "user_id")
-//  private long userId;
   @Column(name = "created_date", insertable = false, updatable = false)
   private Timestamp createdDate;
   @Column(name = "updated_date", insertable = false, updatable = false)

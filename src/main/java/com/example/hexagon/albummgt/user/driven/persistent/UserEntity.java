@@ -14,7 +14,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @DynamicUpdate
 @Data
@@ -41,8 +44,8 @@ public class UserEntity {
   @OneToMany(
       mappedBy = "user",
       cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
       orphanRemoval = true)
+//  @BatchSize(size = 10) or using default_batch_fetch_size to present N+1 query problem in properties file.
   private List<WishItemEntity> wishItem;
 
   public UserEntity() {}

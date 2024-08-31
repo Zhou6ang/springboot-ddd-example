@@ -4,10 +4,14 @@ import com.example.hexagon.albummgt.user.core.domain.UserAggregate;
 import com.example.hexagon.albummgt.user.core.domain.service.DomainUserService;
 import com.example.hexagon.albummgt.user.core.exception.DomainUserException;
 import com.example.hexagon.albummgt.user.driving.dto.UserDTO;
+import com.example.hexagon.albummgt.user.driving.dto.UserRequest;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -55,29 +59,41 @@ public class ApplicationUserService {
         .build();
   }
 
-  public List<UserDTO> getAllUsers() {
-    return getAllUsers(false);
-  }
-
   public List<UserDTO> getAllUsersFromCache() {
-    return getAllUsers(true);
+    return Optional.ofNullable(domainUserService.findAllUserFromCache())
+        .orElseThrow(() -> new DomainUserException("No user found in cache."))
+        .stream()
+        .map(
+            x ->
+                UserDTO.builder()
+                    .id(x.getId())
+                    .name(x.getName())
+                    .email(x.getEmail())
+                    .phone(x.getPhone())
+                    .gender(x.getGender())
+                    .wishlists(x.getWishlists())
+                    .build())
+        .toList();
   }
 
-  private List<UserDTO> getAllUsers(boolean fromCache) {
+  public Page<UserDTO> getAllUsers(UserRequest req) {
     log.info("get all user in application service");
-    List<UserAggregate> list = domainUserService.findAllUser(fromCache);
-    return list.stream()
-        .map(
-            user ->
-                UserDTO.builder()
-                    .id(user.getId())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .phone(user.getPhone())
-                    .gender(user.getGender())
-                    .wishlists(user.getWishlists())
-                    .build())
-        .collect(Collectors.toList());
+    Page<UserAggregate> list = domainUserService.findAllUser(req);
+    return new PageImpl<>(
+        list.stream()
+            .map(
+                user ->
+                    UserDTO.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .phone(user.getPhone())
+                        .gender(user.getGender())
+                        .wishlists(user.getWishlists())
+                        .build())
+            .collect(Collectors.toList()),
+        list.getPageable(),
+        list.getTotalElements());
   }
 
   public void deleteUser(String userId) {
