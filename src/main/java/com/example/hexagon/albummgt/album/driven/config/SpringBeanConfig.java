@@ -4,8 +4,8 @@ import com.example.hexagon.albummgt.album.core.ApplicationAlbumService;
 import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistent;
 import com.example.hexagon.albummgt.album.core.domain.service.DomainAlbumService;
 import com.example.hexagon.albummgt.album.driven.persistent.DefaultAlbumPersistentAdapter;
-import com.example.hexagon.albummgt.album.driven.persistent.AlbumRepository;
-import com.example.hexagon.albummgt.album.driven.persistent.ArtistRepository;
+import com.example.hexagon.albummgt.album.driven.persistent.repo.AlbumRepository;
+import com.example.hexagon.albummgt.album.driven.persistent.repo.ArtistRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package com.example.hexagon.albummgt.album.driven.persistent;
+package com.example.hexagon.albummgt.album.driven.persistent.entity;
 
 import com.example.hexagon.albummgt.album.core.domain.AlbumAggregate;
 import jakarta.persistence.Column;
@@ -25,30 +25,32 @@ public class AlbumEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
+
   private String title;
   private BigDecimal price;
   private String userId;
-  @Column(name = "created_date")
+
+  @Column(name = "created_date", updatable = false, insertable = false)
   private Timestamp createdDate;
-  @Column(name = "updated_date")
+
+  @Column(name = "updated_date", updatable = false, insertable = false)
   private Timestamp updatedDate;
 
-  public AlbumEntity() {//fix lombok issue that can't generate constructor with all arguments
+  public AlbumEntity() { // fix lombok issue that can't generate constructor with all arguments
   }
 
   public static AlbumEntity toAlbumEntity(AlbumAggregate user) {
     return AlbumEntity.builder()
-        .id(user.getId() != null ? Long.parseLong(user.getId()) : 0)
+        .id(user.getId() != null ? user.getId() : 0)
         .title(user.getTitle())
         .price(user.getPrice())
         .userId(user.getUserId())
-        .updatedDate(user.getUpdateDate() == null ? Timestamp.valueOf(LocalDateTime.now())
-            : user.getUpdateDate())
         .build();
   }
 
   public static AlbumAggregate toAlbumAggregate(AlbumEntity user) {
-    return AlbumAggregate.builder().id(user.getId() + "")
+    return AlbumAggregate.builder()
+        .id(user.getId())
         .title(user.getTitle())
         .price(user.getPrice())
         .userId(user.getUserId())

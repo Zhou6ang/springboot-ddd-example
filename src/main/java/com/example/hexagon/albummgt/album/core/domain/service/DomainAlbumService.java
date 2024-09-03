@@ -6,10 +6,12 @@ import com.example.hexagon.albummgt.album.core.domain.Artist;
 import com.example.hexagon.albummgt.album.core.domain.DomainAlbumException;
 import com.example.hexagon.albummgt.album.core.domain.ports.AlbumPersistent;
 import com.example.hexagon.albummgt.album.driving.dto.AlbumDTO;
+import com.example.hexagon.albummgt.album.driving.dto.AlbumRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,20 +25,6 @@ public class DomainAlbumService {
         .userId(dto.getUserId()).build();
     aggregate.setArtist(dto.getArtist());
     return albumPersistent.save(aggregate);
-  }
-
-  public void addArtist(String userId, Artist items) {
-    log.info("add Artist in domain service");
-    AlbumAggregate userAggregate = getAlbumById(userId);
-    userAggregate.setArtist(items);
-    albumPersistent.save(userAggregate);
-  }
-
-  public void removeArtist(String userId, Artist idList) {
-    log.info("remove wishlist in domain service");
-    AlbumAggregate userAggregate = getAlbumById(userId);
-    userAggregate.setArtist(null);
-    albumPersistent.save(userAggregate);
   }
 
   public Long updateAlbum(AlbumDTO req) {
@@ -71,19 +59,26 @@ public class DomainAlbumService {
     return albumPersistent.update(userAggregate);
   }
 
-  public AlbumAggregate getAlbumById(String userId) {
+  public AlbumAggregate getAlbumByUserIdAndId(String userId, Long id) {
     log.info("get user information in domain service");
-    return albumPersistent.findById(userId)
+    return albumPersistent.findByUserIdAndId(userId, id)
         .orElseThrow(() -> new DomainAlbumException("Album with given id doesn't exist"));
   }
+
+  public AlbumAggregate getAlbumById(Long id) {
+    log.info("get a user in domain service");
+    return albumPersistent.findById(id)
+        .orElseThrow(() -> new DomainAlbumException("Album with given id doesn't exist"));
+  }
+
 
   public void deleteAlbumById(String userId) {
     log.info("delete user in domain service");
     albumPersistent.delete(userId);
   }
 
-  public List<AlbumAggregate> findAllAlbum() {
+  public Page<AlbumAggregate> findAllAlbum(AlbumRequest req) {
     log.info("find all user in domain service");
-    return albumPersistent.findAll();
+    return albumPersistent.findAll(req);
   }
 }

@@ -1,13 +1,15 @@
 package com.example.hexagon.albummgt.album.core.domain.ports;
 
 import com.example.hexagon.albummgt.album.core.domain.AlbumAggregate;
-
-import java.util.List;
+import com.example.hexagon.albummgt.album.driving.dto.AlbumRequest;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 public interface AlbumPersistent {
 
-  Optional<AlbumAggregate> findById(String id);
+  Optional<AlbumAggregate> findById(Long id);
+
+  Optional<AlbumAggregate> findByUserIdAndId(String userId, Long id);
 
   Long save(AlbumAggregate userAggregate);
 
@@ -15,5 +17,5 @@ public interface AlbumPersistent {
 
   Long update(AlbumAggregate userAggregate);
 
-  List<AlbumAggregate> findAll();
+  Page<AlbumAggregate> findAll(AlbumRequest req);
 }
